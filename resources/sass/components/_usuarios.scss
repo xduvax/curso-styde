@@ -1,0 +1,50 @@
+
+$tableBgDark : #343a40;
+$tableBorder: #b2bec3;
+
+.tabla-usuarios{
+    border-collapse: collapse;
+    text-align: center;
+    margin-top: 25px;
+    color: #212529;
+
+    tr{
+        border: 1px solid $tableBorder;
+        transition: 0.3s;
+    }
+
+    td, th{
+        padding: 15px;
+    }
+
+    tr:nth-child(1){
+        background-color: $tableBgDark;
+        color: #FFF;
+    }
+
+    tr:hover:not(:nth-child(1)){
+        background-color: $transitionColor;
+    }
+
+    img{
+        width: 30px;
+        display: block;
+    }
+
+    button[type=submit]{
+        cursor: pointer;
+        background-color: rgba(0,0,0,0);
+    }
+
+    .borde-icono{
+        border: 1px solid #000;
+        border-radius: 50%;
+        padding: 7px;
+    }
+}
+
+.td-especial{
+    display: flex;
+    width: 230px;
+    justify-content: space-evenly;
+}

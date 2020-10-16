@@ -1,0 +1,64 @@
+
+body{
+    background-color: $stydeFondo;
+}
+
+.centrar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn{
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 5px;
+    color: #FFF;
+}
+
+.btn-azul{
+    background-color: $btnAzul;
+}
+.btn-gris{
+    background-color: $btnGris;
+}
+
+.active{
+    background-color: $stydeHover;
+}
+
+header{
+    display: flex;
+    justify-content: center;
+    height: 75px;
+    background-color: $stydeHeader;
+
+    ul{
+        color: #FFF;
+        display: flex;
+    }
+
+    ul > li > a{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    a:hover{
+        background-color: $stydeHover;
+    }
+}
+
+.main-principal{
+    display: block;
+    margin: 0 auto;
+    width: 75%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border: 1px solid $mainBorder;
+    border-radius: 5px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}

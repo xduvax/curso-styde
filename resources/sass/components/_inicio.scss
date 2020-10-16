@@ -1,0 +1,17 @@
+
+.main-principal > h1{
+    text-align: center;
+    color: #30336b;
+}
+
+.flex-container-inicio{
+    display: flex;
+    justify-content: space-evenly;
+    width: 75%;
+    margin: 0 auto;
+    margin-top: 30px;
+
+    img{
+        width: 400px;
+    }
+}
