@@ -31,7 +31,7 @@ class UserController extends Controller
 
     public function new()
     {
-        $professions = Profession::all();
+        $professions = Profession::orderBy('title', 'ASC')->get();
 
         return view('users.nuevo', ['professions' => $professions]);
     }

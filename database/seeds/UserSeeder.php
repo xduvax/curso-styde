@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        /* User::create([
+        User::create([
             'profession_id' => '1',
             'name' => 'Oscar Diaz',
             'age' => 32,
@@ -28,6 +28,6 @@ class UserSeeder extends Seeder
             'password' => bcrypt('1234'),
         ]);
 
-        factory(User::class,5)->create(); */
+        factory(User::class,5)->create();
     }
 }
