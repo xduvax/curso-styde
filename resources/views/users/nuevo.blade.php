@@ -24,7 +24,9 @@
             <select name="profession_id" id='profession'>
                 <option value='' disabled selected>-Elige una profesion-</option>
                 @foreach($professions as $profession)
-                    <option value="{{$profession->id}}">{{ $profession->title }}</option>
+                    <option value="{{$profession->id}}" {{ old('profession_id') == $profession->id ? ' selected' : '' }}>
+                        {{ $profession->title }}
+                    </option>
                 @endforeach
             </select>
             @error('profession_id')
