@@ -41,7 +41,7 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'min:3'],
-            'profession_id' => ['exists:professions,id'],
+            'profession_id' => ['required', 'exists:professions,id'],
             'age' => ['required', 'numeric', 'min:18'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'min:4'],
