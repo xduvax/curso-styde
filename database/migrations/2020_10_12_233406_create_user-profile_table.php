@@ -19,7 +19,7 @@ class CreateUserProfileTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
 
             $table->string('twitter')->nullable();
-            $table->text('bio');
+            $table->text('bio')->nullable();
             $table->timestamps();
         });
     }

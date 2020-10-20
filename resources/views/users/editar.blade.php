@@ -15,34 +15,46 @@
         @csrf
         @method('PUT')
 
-            <label for="nombre">Nombre</label>
-            <input type="text" name='name' id='nombre' value="{{ old('name', $user->name) }}">
+            <label for="name">Nombre</label>
+            <input type="text" name='name' id='name' value="{{ old('name', $user->name) }}">
             @error('name')
                 <ul><li class='error-message'>{{ $message }}</li></ul>
             @enderror
 
-            <label for="profesion">Profesión</label>
-            <select name="profession_id" id="profesion">
+            <label for="profession">Profesión</label>
+            <select name="profession_id" id="profession">
                 @foreach($professions as $profession)
                     <option value="{{$profession->id}}" @if($user->profession_id == $profession->id) {{'selected'}} @endif >{{ $profession->title }}</option>
                 @endforeach
             </select>
 
-            <label for="edad">Edad</label>
-            <input type="text" name='age' id='edad' value="{{ old('age', $user->age) }}">
+            <label for="age">Edad</label>
+            <input type="text" name='age' id='age' value="{{ old('age', $user->age) }}">
             @error('age')
                 <ul><li class='error-message'>{{ $message }}</li></ul>
             @enderror
 
-            <label for="correo">Correo</label>
-            <input type="email" name='email' id='correo' value="{{ old('email', $user->email) }}">
+            <label for="email">Correo</label>
+            <input type="email" name='email' id='email' value="{{ old('email', $user->email) }}">
             @error('email')
                 <ul><li class='error-message'>{{ $message }}</li></ul>
             @enderror
 
-            <label for="clave">Password</label>
-            <input type="password" name='password' id='clave' placeholder='Si mantiene el campo vacio no se cambiará la clave'>
+            <label for="password">Password</label>
+            <input type="password" name='password' id='password' placeholder='Si mantiene el campo vacio no se cambiará la clave'>
             @error('password')
+                <ul><li class='error-message'>{{ $message }}</li></ul>
+            @enderror
+
+            <label for="twitter">Twitter</label>
+            <input type="text" name='twitter' id='twitter' placeholder='http://twitter.com/duva' value="{{ old('twitter', $profile->twitter) }}">
+            @error('twitter')
+                <ul><li class='error-message'>{{ $message }}</li></ul>
+            @enderror
+
+            <label for="bio">Biografia</label>
+            <textarea name="bio" id="bio">{{ old('bio', $profile->bio) }}</textarea>
+            @error('bio')
                 <ul><li class='error-message'>{{ $message }}</li></ul>
             @enderror
 

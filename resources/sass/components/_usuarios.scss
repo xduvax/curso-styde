@@ -43,6 +43,13 @@ $tableBorder: #b2bec3;
     }
 }
 
+.detalle{
+
+    td, th{
+        max-width: 400px;
+    }
+}
+
 .td-especial{
     display: flex;
     width: 230px;

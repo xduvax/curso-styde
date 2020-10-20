@@ -11,13 +11,15 @@
         <a class='btn btn-gris' href=" {{ url('/usuarios')}} ">Volver a listado</a>
     </div>
 
-    <table class='tabla-usuarios centrar'>
+    <table class='tabla-usuarios centrar detalle'>
     
         <tr>
             <th>Nombre</th>
             <th>Edad</th>
             <th>Correo</th>
             <th>Profesion</th>
+            <th>Twitter</th>
+            <th>Bio</th>
         </tr>
 
         <tr>
@@ -25,6 +27,8 @@
             <td> {{$user->age}} </td>
             <td> {{$user->email}} </td>
             <td> {{$user->profession->title}} </td>
+            <td> {{$profile->twitter}} </td>
+            <td> {{$profile->bio}} </td>
         </tr>
 
     </table>

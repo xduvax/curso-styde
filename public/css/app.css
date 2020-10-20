@@ -482,6 +482,10 @@ header a:hover {
   padding: 7px;
 }
 
+.detalle td, .detalle th {
+  max-width: 400px;
+}
+
 .td-especial {
   display: flex;
   width: 230px;

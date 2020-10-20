@@ -59,6 +59,9 @@
 
             <label for="bio">Biografia</label>
             <textarea name="bio" id="bio">{{ old('bio') }}</textarea>
+            @error('bio')
+                <ul><li class='error-message'>{{ $message }}</li></ul>
+            @enderror
 
             <div class='centrar'> <input class='btn btn-azul' type="submit" value='Ingresar'> </div>
 

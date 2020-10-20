@@ -25,7 +25,12 @@ class UserController extends Controller
 
     public function detail(User $usuario)
     {
-        return view('users.detalle', ['user' => $usuario]);
+        $profile = UserProfile::where('user_id', $usuario->id)->first();
+
+        return view('users.detalle', [
+            'user' => $usuario,
+            'profile' => $profile
+        ]);
     }
 
 
@@ -40,13 +45,13 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required', 'min:3'],
+            'name' => ['required', 'min:3', 'string'],
             'profession_id' => ['required', 'exists:professions,id'],
-            'age' => ['required', 'numeric', 'min:18'],
+            'age' => ['required', 'numeric'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'min:4'],
-            'bio' => 'required',
-            'twitter' => ['nullable', 'url']
+            'twitter' => ['nullable', 'url'],
+            'bio' => ['present']
         ]);
 
         User::persistUser($data);
@@ -57,9 +62,12 @@ class UserController extends Controller
 
     public function edit(User $usuario)
     {
+        $profile = UserProfile::where('user_id', $usuario->id)->first();
+
         return view('users.editar', [
             'user' => $usuario,
-            'professions' => Profession::all()
+            'professions' => Profession::all(),
+            'profile' => $profile
         ]);
     }
 
@@ -67,11 +75,13 @@ class UserController extends Controller
     public function update(Request $request, User $usuario)
     {
         $data = $request->validate([
-            'name' => ['required', 'string'],
-            'profession_id' => ['exists:professions,id'],
+            'name' => ['required', 'string', 'min:3'],
+            'profession_id' => ['required', 'exists:professions,id'],
             'age' => ['required', 'integer'],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($usuario->id)],
-            'password' => ''
+            'password' => '',
+            'twitter' => ['nullable', 'url'],
+            'bio' => ['present']
         ]);
 
         if($data['password'] != ''){
@@ -80,7 +90,12 @@ class UserController extends Controller
             unset($data['password']);
         }
 
-        $usuario->update($data);
+        $user_profile = UserProfile::where('user_id', $usuario->id)->first();
+        
+        DB::transaction(function() use ($usuario, $user_profile, $data){
+            $user_profile->update($data);
+            $usuario->update($data);
+        });
 
         return redirect("/usuarios/{$usuario->id}");
     }
@@ -88,7 +103,13 @@ class UserController extends Controller
 
     public function delete(User $usuario)
     {
-        $usuario->delete();
+        $user_profile = UserProfile::where('user_id', $usuario->id)->first();
+        
+        DB::transaction(function() use($usuario, $user_profile){
+            $user_profile->delete();
+            $usuario->delete();
+        });
+
         return redirect("/usuarios");
     }
 

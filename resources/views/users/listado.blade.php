@@ -30,8 +30,9 @@
                     <td><a href='{{ url("/usuarios/{$user->id}") }}'>{{$user->name}}</a></td>
                     <td class='td-especial'>
                         <a class='borde-icono' href='{{ url("/usuarios/{$user->id}") }}'> <img src="{{ asset('/img/view.png') }}"> </a>
-                        <a class='borde-icono' href='{{ url("/usuarios/{$user->id}/editar") }}'> <img src="{{ asset('/img/edit.png') }}"> </a> 
-                        <form method="POST" action='{{ url("/usuarios/{$user->id}/eliminar") }}'>
+                        <a class='borde-icono' href='{{ url("/usuarios/{$user->id}/editar") }}'> <img src="{{ asset('/img/edit.png') }}"> </a>
+
+                        <form method="POST" action='{{ url("/usuarios/{$user->id}") }}'>
                             @csrf
                             @method('DELETE')
                             <button class='borde-icono' type='submit'> <img src="{{ asset('/img/delete.png') }}"> </button>
