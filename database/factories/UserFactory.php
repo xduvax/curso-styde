@@ -2,9 +2,11 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Models\User;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
+
+use App\Models\User;
+use App\Models\Profession;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +21,7 @@ use Illuminate\Support\Str;
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-        'profession_id' => rand(1, 5),
+        'profession_id' => returnProfessionId(),
         'name' => $faker->name,
         'age' => rand(1, 99),
         'email' => $faker->unique()->safeEmail,
