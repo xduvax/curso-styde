@@ -72,6 +72,19 @@
                 <ul><li class='error-message'>{{ $message }}</li></ul>
             @enderror
 
+            <p>Rol</p>
+            @foreach($roles as $role => $view)
+                <input type="radio" 
+                    id="role_{{ $role }}" 
+                    name="role" 
+                    value="{{ $role }}"
+                    {{ old('role') == $role ? 'checked' : '' }}>
+                <label class='inline' for="role_{{ $role }}">{{ $view }}</label>
+            @endforeach
+            @error('role')
+                <ul><li class='error-message'>{{ $message }}</li></ul>
+            @enderror
+
             <div class='centrar'> <input class='btn btn-azul' type="submit" value='Ingresar'> </div>
 
         </form>

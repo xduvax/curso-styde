@@ -13,7 +13,7 @@ class User extends Authenticatable
     use Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'profession_id', 'age'
+        'name', 'email', 'password', 'profession_id', 'age', 'role'
     ];
 
     /**
@@ -53,7 +53,8 @@ class User extends Authenticatable
                 'profession_id' => $data['profession_id'],
                 'age' => $data['age'],
                 'email' => $data['email'],
-                'password' => bcrypt($data['password'])
+                'password' => bcrypt($data['password']),
+                'role' => $data['role'] ?? 'user'
             ]);
     
             UserProfile::create([

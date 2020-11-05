@@ -40,9 +40,15 @@ class UserController extends Controller
         $professions = Profession::orderBy('title', 'ASC')->get();
         $skills = Skill::orderBy('id', 'ASC')->get();
 
+        $roles = [
+            'admin' => 'Administrador',
+            'user' => 'Usuario'
+        ];
+
         return view('users.nuevo', [
             'professions' => $professions,
-            'skills' => $skills
+            'skills' => $skills,
+            'roles' => $roles,
         ]);
     }
 
@@ -60,7 +66,8 @@ class UserController extends Controller
             'skills' => [
                 'array',
                 Rule::exists('skills', 'id'),
-            ]
+            ],
+            'role' => ['nullable', Rule::in('admin', 'user')]
         ]);
 
         User::persistUser($data);
@@ -114,10 +121,14 @@ class UserController extends Controller
     {
         $user_profile = UserProfile::where('user_id', $usuario->id)->first();
         
-        DB::transaction(function() use($usuario, $user_profile){
-            $user_profile->delete();
+        if($user_profile != null){
+            DB::transaction(function() use($usuario, $user_profile){
+                $user_profile->delete();
+                $usuario->delete();
+            });
+        }else{
             $usuario->delete();
-        });
+        }
 
         return redirect("/usuarios");
     }

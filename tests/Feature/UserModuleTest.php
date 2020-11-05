@@ -18,6 +18,23 @@ class UserModuleTest extends TestCase
     }
 
 
+    public function getValidData(array $custom = [])
+    {
+        $this->insertar_profesiones();
+
+        return array_merge([
+            'profession_id' => returnProfessionId(),
+            'name' => 'Oscar Diaz',
+            'email' => 'oscar@gmail.com',
+            'age' => 30,
+            'password' => '1234',
+            'twitter' => 'https://twitter.com/xduvax',
+            'bio' => 'Programador back-end',
+            'role' => 'user'
+        ], $custom);
+    }
+
+
     /** @test */
     public function pantalla_inicio_imagen_dark()
     {
@@ -73,22 +90,36 @@ class UserModuleTest extends TestCase
     /** @test */
     public function creacion_usuario()
     {
-        $this->insertar_profesiones();
+        $skillA = factory('App\Models\Skill')->create();
+        $skillB = factory('App\Models\Skill')->create();
 
-        $this->post('/usuarios/guardar',[
-            'profession_id' => returnProfessionId(),
-            'name' => 'oscar',
-            'email' => 'oscar@gmail.com',
-            'age' => 32,
-            'password' => '123456',
-            'twitter' => '',
-            'bio' => ''
-        ])->assertRedirect('/usuarios');
+        $this->post('/usuarios/guardar', $this->getValidData([
+            'skills' => [$skillA->id, $skillB->id]
+        ]))
+        ->assertRedirect('/usuarios');
         
-        $this->assertDatabaseHas('Users', [
-            'name' => 'oscar',
+        $usuario = User::where('email','oscar@gmail.com')->first();
+        
+        $this->assertDatabaseHas('users', [
+            'name' => 'Oscar Diaz',
             'email' => 'oscar@gmail.com',
-            'age' => 32
+            'age' => 30,
+            'role' => 'user'
+        ]);
+
+        $this->assertDatabaseHas('user_profiles', [
+            'twitter' => 'https://twitter.com/xduvax',
+            'bio' => 'Programador back-end',
+        ]);
+
+        $this->assertDatabaseHas('user_skill', [
+            'user_id' => $usuario->id,
+            'skill_id' => $skillA->id
+        ]);
+
+        $this->assertDatabaseHas('user_skill', [
+            'user_id' => $usuario->id,
+            'skill_id' => $skillB->id
         ]);
     }
 
@@ -99,21 +130,17 @@ class UserModuleTest extends TestCase
         $this->insertar_profesiones();
 
         $this->from('usuarios/nuevo')
-                ->post('/usuarios/guardar', [
-                    'profession_id' => returnProfessionid(),
-                    'name' => '',
-                    'email' => 'oscar@gmail.com',
-                    'age' => 32,
-                    'password' => '1234'
-                ])
+                ->post('/usuarios/guardar', $this->getValidData([
+                    'name' => ''
+                ]))
                 ->assertRedirect('/usuarios/nuevo')
                 ->assertSessionHasErrors('name');
 
-        $this->assertEquals(0, \App\Models\User::count());
+        //$this->assertEquals(0, \App\Models\User::count());
 
-        /* $this->assertDatabaseMissing('users', [
+        $this->assertDatabaseMissing('users', [
             'email' => 'oscar@gmail.com'
-        ]); */
+        ]);
     }
 
 
@@ -145,16 +172,15 @@ class UserModuleTest extends TestCase
     public function profesion_debe_ser_valida()
     {
         $this->from('usuarios/nuevo')
-            ->post('/usuarios/guardar', [
-                'profession_id' => 999,
-                'name' => 'Oscar',
-                'email' => 'oscar@gmail.com',
-                'age' => 32,
-                'password' => '1234'
-            ])
+            ->post('/usuarios/guardar', $this->getValidData([
+                'profession_id' => 999
+            ]))
             ->assertRedirect('/usuarios/nuevo')
             ->assertSessionHasErrors('profession_id');
 
+        $this->assertDatabaseMissing('users', [
+            'email' => 'oscar@gmail.com'
+        ]);
         $this->assertEquals(0, \App\Models\User::count());
     }
 
@@ -162,17 +188,10 @@ class UserModuleTest extends TestCase
     /** @test */
     public function skills_deben_ser_un_array()
     {
-        $this->insertar_profesiones();
-
         $this->from('/usuarios/nuevo')
-            ->post('/usuarios/guardar', [
-                'profession_id' => returnProfessionid(),
-                'name' => 'Oscar',
-                'email' => 'oscar@gmail.com',
-                'age' => 30,
-                'password' => '1234',
+            ->post('/usuarios/guardar', $this->getValidData([
                 'skills' => 'PHP, JS'
-            ])
+            ]))
             ->assertRedirect('/usuarios/nuevo')
             ->assertSessionHasErrors('skills');
 
@@ -183,24 +202,62 @@ class UserModuleTest extends TestCase
     /** @test */
     public function skills_deben_ser_validas()
     {
-        $this->insertar_profesiones();
-
         $skillA = factory('App\Models\Skill')->create();
         $skillB = factory('App\Models\Skill')->create();
 
         $this->from('/usuarios/nuevo')
-            ->post('/usuarios/guardar', [
-                'profession_id' => returnProfessionid(),
-                'name' => 'Oscar',
-                'email' => 'oscar@gmail.com',
-                'age' => 30,
-                'password' => '1234',
+            ->post('/usuarios/guardar', $this->getValidData([
                 'skills' => [$skillA->id, $skillB->id + 1]
-            ])
+            ]))
             ->assertRedirect('/usuarios/nuevo')
             ->assertSessionHasErrors('skills');
         
         $this->assertEquals(0, \App\Models\User::count());
+    }
+
+
+    /** @test */
+    public function campo_role_es_opcional()
+    {
+        $this->from('/usuarios/nuevo')
+            ->post('/usuarios/guardar', $this->getValidData([
+                'role' => null
+            ]))
+            ->assertRedirect('/usuarios');
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'oscar@gmail.com',
+            'role' => 'user'
+        ]);
+    }
+
+
+    /** @test */
+    public function role_debe_ser_valido()
+    {
+        $this->from('/usuarios/nuevo')
+            ->post('/usuarios/guardar', $this->getValidData([
+                'role' => 'rol-invalido'
+            ]))
+            ->assertRedirect('/usuarios/nuevo')
+            ->assertSessionHasErrors('role');
+
+        $this->assertEquals(0, \App\Models\User::count());
+    }
+
+
+    /** @test */
+    public function eliminar_usuario()
+    {
+        $this->insertar_profesiones();
+        $usuario = factory('App\Models\User')->create();
+
+        $this->delete("/usuarios/{$usuario->id}")
+            ->assertRedirect('/usuarios');
+
+        $this->assertDatabaseMissing('users', [
+           'id' => $usuario->id
+        ]);
     }
 
 }
