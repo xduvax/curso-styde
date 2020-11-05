@@ -12,7 +12,7 @@ class UserModuleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function insertar_profesiones()
+    private function insertar_profesiones()
     {
         return factory('App\Models\Profession', 5)->create();
     }
@@ -104,7 +104,7 @@ class UserModuleTest extends TestCase
                     'name' => '',
                     'email' => 'oscar@gmail.com',
                     'age' => 32,
-                    'password' => '123'
+                    'password' => '1234'
                 ])
                 ->assertRedirect('/usuarios/nuevo')
                 ->assertSessionHasErrors('name');
@@ -138,6 +138,69 @@ class UserModuleTest extends TestCase
             ->assertViewHas('professions', function($profesiones) use ($profesion){
                 return $profesiones->contains($profesion);
             });
+    }
+
+
+    /** @test */
+    public function profesion_debe_ser_valida()
+    {
+        $this->from('usuarios/nuevo')
+            ->post('/usuarios/guardar', [
+                'profession_id' => 999,
+                'name' => 'Oscar',
+                'email' => 'oscar@gmail.com',
+                'age' => 32,
+                'password' => '1234'
+            ])
+            ->assertRedirect('/usuarios/nuevo')
+            ->assertSessionHasErrors('profession_id');
+
+        $this->assertEquals(0, \App\Models\User::count());
+    }
+
+
+    /** @test */
+    public function skills_deben_ser_un_array()
+    {
+        $this->insertar_profesiones();
+
+        $this->from('/usuarios/nuevo')
+            ->post('/usuarios/guardar', [
+                'profession_id' => returnProfessionid(),
+                'name' => 'Oscar',
+                'email' => 'oscar@gmail.com',
+                'age' => 30,
+                'password' => '1234',
+                'skills' => 'PHP, JS'
+            ])
+            ->assertRedirect('/usuarios/nuevo')
+            ->assertSessionHasErrors('skills');
+
+        $this->assertEquals(0, \App\Models\User::count());
+    }
+
+
+    /** @test */
+    public function skills_deben_ser_validas()
+    {
+        $this->insertar_profesiones();
+
+        $skillA = factory('App\Models\Skill')->create();
+        $skillB = factory('App\Models\Skill')->create();
+
+        $this->from('/usuarios/nuevo')
+            ->post('/usuarios/guardar', [
+                'profession_id' => returnProfessionid(),
+                'name' => 'Oscar',
+                'email' => 'oscar@gmail.com',
+                'age' => 30,
+                'password' => '1234',
+                'skills' => [$skillA->id, $skillB->id + 1]
+            ])
+            ->assertRedirect('/usuarios/nuevo')
+            ->assertSessionHasErrors('skills');
+        
+        $this->assertEquals(0, \App\Models\User::count());
     }
 
 }

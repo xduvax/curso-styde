@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\Profession;
+use App\Models\Skill;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 
@@ -37,8 +38,12 @@ class UserController extends Controller
     public function new()
     {
         $professions = Profession::orderBy('title', 'ASC')->get();
+        $skills = Skill::orderBy('id', 'ASC')->get();
 
-        return view('users.nuevo', ['professions' => $professions]);
+        return view('users.nuevo', [
+            'professions' => $professions,
+            'skills' => $skills
+        ]);
     }
 
 
@@ -46,12 +51,16 @@ class UserController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'min:3', 'string'],
-            'profession_id' => ['required', 'exists:professions,id'],
+            'profession_id' => ['required', 'exists:professions,id'], //Rule::exists('professions', 'id')->where('selectable', true)
             'age' => ['required', 'numeric'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'min:4'],
-            'twitter' => ['nullable', 'url'],
-            'bio' => ['present']
+            'twitter' => ['nullable', 'present', 'url'],
+            'bio' => ['nullable', 'present'],
+            'skills' => [
+                'array',
+                Rule::exists('skills', 'id'),
+            ]
         ]);
 
         User::persistUser($data);

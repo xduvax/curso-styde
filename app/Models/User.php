@@ -12,11 +12,6 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'name', 'email', 'password', 'profession_id', 'age'
     ];
@@ -38,6 +33,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function skills()
+    {
+        return $this->belongsToMany('App\Models\Skill', 'user_skill');
+    }
 
     public function profession()
     {
@@ -61,6 +61,11 @@ class User extends Authenticatable
                 'twitter' => $data['twitter'] ?? null,
                 'user_id' => $usuario->id
             ]);
+
+            if(!empty($data['skills'])){
+                $usuario->skills()->attach($data['skills']);
+            }
+
         });
     }
 

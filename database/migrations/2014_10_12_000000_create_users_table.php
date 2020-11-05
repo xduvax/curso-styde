@@ -14,9 +14,10 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-
             $table->increments('id');
+
             $table->unsignedInteger('profession_id');
+            $table->foreign('profession_id')->references('id')->on('professions');
             
             $table->string('name');
             $table->unsignedTinyInteger('age');
@@ -25,10 +26,6 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-
-            $table->foreign('profession_id')
-                ->references('id')
-                ->on('professions');
         });
     }
 

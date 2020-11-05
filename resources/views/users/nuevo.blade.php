@@ -63,6 +63,15 @@
                 <ul><li class='error-message'>{{ $message }}</li></ul>
             @enderror
 
+            <p>Habilidades</p>
+            @foreach($skills as $skill)
+                <input type="checkbox" id="skill_{{ $skill->id }}" name="skills[]" value="{{ $skill->id }}">
+                <label class='inline' for="skill_{{ $skill->id }}">{{$skill->name}}</label>
+            @endforeach
+            @error('skills')
+                <ul><li class='error-message'>{{ $message }}</li></ul>
+            @enderror
+
             <div class='centrar'> <input class='btn btn-azul' type="submit" value='Ingresar'> </div>
 
         </form>
