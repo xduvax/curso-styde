@@ -8,6 +8,11 @@ use Tests\TestCase;
 use App\Models\Profession;
 use App\Models\User;
 
+//$this->assertEquals(0, \App\Models\User::count()); assertSame()
+/*  $this->assertDatabaseMissing('users', [
+        'email' => 'oscar@gmail.com'
+    ]); */
+
 class UserModuleTest extends TestCase
 {
     use RefreshDatabase;
@@ -58,6 +63,7 @@ class UserModuleTest extends TestCase
         $this->insertar_profesiones();
 
         factory('App\Models\User', 10)->create();
+
         $this->assertEquals(10, \App\Models\User::count());
     }
 
@@ -127,8 +133,6 @@ class UserModuleTest extends TestCase
     /** @test */
     public function formulario_nombre_requerido()
     {
-        $this->insertar_profesiones();
-
         $this->from('usuarios/nuevo')
                 ->post('/usuarios/guardar', $this->getValidData([
                     'name' => ''
@@ -136,11 +140,7 @@ class UserModuleTest extends TestCase
                 ->assertRedirect('/usuarios/nuevo')
                 ->assertSessionHasErrors('name');
 
-        //$this->assertEquals(0, \App\Models\User::count());
-
-        $this->assertDatabaseMissing('users', [
-            'email' => 'oscar@gmail.com'
-        ]);
+        $this->assertDatabaseEmpty('users');
     }
 
 
@@ -181,6 +181,7 @@ class UserModuleTest extends TestCase
         $this->assertDatabaseMissing('users', [
             'email' => 'oscar@gmail.com'
         ]);
+
         $this->assertEquals(0, \App\Models\User::count());
     }
 
@@ -207,7 +208,7 @@ class UserModuleTest extends TestCase
 
         $this->from('/usuarios/nuevo')
             ->post('/usuarios/guardar', $this->getValidData([
-                'skills' => [$skillA->id, $skillB->id + 1]
+                'skills' => [$skillA->id, $skillB->id + 99]
             ]))
             ->assertRedirect('/usuarios/nuevo')
             ->assertSessionHasErrors('skills');
