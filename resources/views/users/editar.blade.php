@@ -24,7 +24,12 @@
             <label for="profession">Profesión</label>
             <select name="profession_id" id="profession">
                 @foreach($professions as $profession)
-                    <option value="{{$profession->id}}" @if($user->profession_id == $profession->id) {{'selected'}} @endif >{{ $profession->title }}</option>
+                    <option value="{{$profession->id}}"
+                        @if($user->profession_id == $profession->id) 
+                            {{'selected'}} 
+                        @endif >
+                        {{ $profession->title }}
+                    </option>
                 @endforeach
             </select>
 

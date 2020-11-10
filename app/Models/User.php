@@ -34,15 +34,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function skills()
-    {
-        return $this->belongsToMany('App\Models\Skill', 'user_skill');
-    }
 
     public function profession()
     {
         return $this->belongsTo('App\Models\Profession');
     }
+
+
+    public function skills()
+    {
+        return $this->belongsToMany('App\Models\Skill', 'user_skill');
+    }
+
+
+    public function profile()
+    {
+        return $this->hasOne('App\Models\UserProfile');
+    }
+
 
     public static function persistUser($data)
     {
