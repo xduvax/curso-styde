@@ -52,14 +52,41 @@
             @enderror
 
             <label for="twitter">Twitter</label>
-            <input type="text" name='twitter' id='twitter' placeholder='http://twitter.com/duva' value="{{ old('twitter', $profile->twitter) }}">
+            <input type="text" name='twitter' id='twitter' placeholder='http://twitter.com/duva' value="{{ old('twitter', $user->profile->twitter) }}">
             @error('twitter')
                 <ul><li class='error-message'>{{ $message }}</li></ul>
             @enderror
 
             <label for="bio">Biografia</label>
-            <textarea name="bio" id="bio">{{ old('bio', $profile->bio) }}</textarea>
+            <textarea name="bio" id="bio">{{ old('bio', $user->profile->bio) }}</textarea>
             @error('bio')
+                <ul><li class='error-message'>{{ $message }}</li></ul>
+            @enderror
+
+            <p>Habilidades</p>
+            @foreach($skills as $skill)
+                <input type="checkbox" 
+                    id="skill_{{ $skill->id }}" 
+                    name="skills[{{ $skill->id }}]" 
+                    value="{{ $skill->id }}"
+                    {{ ( $errors->any() ? old("skills.{$skill->id}") : $user->skills->contains($skill) ) ? 'checked' : '' }}
+                    >
+                <label class='inline' for="skill_{{ $skill->id }}">{{$skill->name}}</label>
+            @endforeach
+            @error('skills')
+                <ul><li class='error-message'>{{ $message }}</li></ul>
+            @enderror
+
+            <p>Rol</p>
+            @foreach($roles as $role => $view)
+                <input type="radio" 
+                    id="role_{{ $role }}" 
+                    name="role" 
+                    value="{{ $role }}"
+                    {{ old('role', $user->role) == $role ? 'checked' : '' }}>
+                <label class='inline' for="role_{{ $role }}">{{ $view }}</label>
+            @endforeach
+            @error('role')
                 <ul><li class='error-message'>{{ $message }}</li></ul>
             @enderror
 

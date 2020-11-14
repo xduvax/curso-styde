@@ -65,7 +65,12 @@
 
             <p>Habilidades</p>
             @foreach($skills as $skill)
-                <input type="checkbox" id="skill_{{ $skill->id }}" name="skills[]" value="{{ $skill->id }}">
+                <input type="checkbox" 
+                    id="skill_{{ $skill->id }}" 
+                    name="skills[{{ $skill->id }}]" 
+                    value="{{ $skill->id }}"
+                    {{ old("skills.{$skill->id}") ? 'checked' : '' }}
+                    >
                 <label class='inline' for="skill_{{ $skill->id }}">{{$skill->name}}</label>
             @endforeach
             @error('skills')

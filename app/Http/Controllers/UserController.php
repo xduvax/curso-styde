@@ -78,12 +78,20 @@ class UserController extends Controller
 
     public function edit(User $usuario)
     {
-        $profile = UserProfile::where('user_id', $usuario->id)->first();
+        //$profile = UserProfile::where('user_id', $usuario->id)->first();
+        $professions = Profession::orderBy('title', 'ASC')->get();
+        $skills = Skill::orderBy('id', 'ASC')->get();
+
+        $roles = [
+            'admin' => 'Administrador',
+            'user' => 'Usuario'
+        ];
 
         return view('users.editar', [
             'user' => $usuario,
-            'professions' => Profession::all(),
-            'profile' => $profile
+            'professions' => $professions,
+            'skills' => $skills,
+            'roles' => $roles
         ]);
     }
 
