@@ -12,6 +12,15 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    protected function loadFormInfo()
+    {
+        return [
+            'professions' => Profession::orderBy('title', 'ASC')->get(),
+            'skills' => Skill::orderBy('id', 'ASC')->get(),
+            'roles' => ['admin' => 'Administrador', 'user' => 'Usuario']
+        ];
+    }
+
 
     public function list()
     {
@@ -37,19 +46,7 @@ class UserController extends Controller
 
     public function new()
     {
-        $professions = Profession::orderBy('title', 'ASC')->get();
-        $skills = Skill::orderBy('id', 'ASC')->get();
-
-        $roles = [
-            'admin' => 'Administrador',
-            'user' => 'Usuario'
-        ];
-
-        return view('users.nuevo', [
-            'professions' => $professions,
-            'skills' => $skills,
-            'roles' => $roles,
-        ]);
+        return view('users.nuevo', $this->loadFormInfo());
     }
 
 
@@ -78,21 +75,7 @@ class UserController extends Controller
 
     public function edit(User $usuario)
     {
-        //$profile = UserProfile::where('user_id', $usuario->id)->first();
-        $professions = Profession::orderBy('title', 'ASC')->get();
-        $skills = Skill::orderBy('id', 'ASC')->get();
-
-        $roles = [
-            'admin' => 'Administrador',
-            'user' => 'Usuario'
-        ];
-
-        return view('users.editar', [
-            'user' => $usuario,
-            'professions' => $professions,
-            'skills' => $skills,
-            'roles' => $roles
-        ]);
+        return view('users.editar', $this->loadFormInfo())->with(['user' => $usuario]);
     }
 
 
